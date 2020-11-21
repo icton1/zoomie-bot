@@ -104,16 +104,13 @@ namespace GimmeTheZoomBot
             return service;
         }
 
-        static public List<string> GetGmailMessages(int number = 5, string from = "process@isu.ifmo.ru")
+        static public List<string> GetGmailMessages(int number = 5)
         {
             List<string> messagesList = new List<string>();
 
             var service = GetService();
 
-            var request = service.Users.Messages.List("me");
-            request.Q = $"from:{from}";
-            request.LabelIds = "INBOX";
-            request.IncludeSpamTrash = false;
+            var request = RequestForGmailMessages(service);
 
             try
             {
@@ -136,11 +133,36 @@ namespace GimmeTheZoomBot
                         var payload = message.Payload;
                         var parts = payload.Parts;
 
-
-
-                        foreach (var part in parts)
+                        if (parts.Count > 0)
                         {
-                            var body = part.Body.Data;
+                            foreach (var part in parts)
+                            {
+                                var body = part.Body.Data;
+
+                                if (body != null)
+                                {
+                                    var decodeBody = Base64UrlEncoder.Decode(body);
+                                    decodeBody = EmailParser.ParseMail(decodeBody);
+                                    Console.WriteLine(decodeBody);
+
+                                    if (decodeBody != null)
+                                    {
+                                        messagesList.Add(decodeBody);
+                                        count++;
+                                    }
+
+                                }
+
+                                if (count >= number)
+                                {
+                                    all = true;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var body = payload.Body.Data;
 
                             if (body != null)
                             {
@@ -148,18 +170,10 @@ namespace GimmeTheZoomBot
                                 decodeBody = EmailParser.ParseMail(decodeBody);
                                 Console.WriteLine(decodeBody);
 
-                                if(decodeBody != null)
+                                if (decodeBody != null)
                                 {
                                     messagesList.Add(decodeBody);
-                                    count++;
                                 }
-                                
-                            }
-
-                            if (count >= number)
-                            {
-                                all = true;
-                                break;
                             }
                         }
 
@@ -177,6 +191,90 @@ namespace GimmeTheZoomBot
                 Console.WriteLine(ex.Message);
                 return new List<string>();
             }
+        }
+
+        static public List<string> GetGmailMessages(DateTime date)
+        {
+            List<string> messagesList = new List<string>();
+
+            var service = GetService();
+            UsersResource.MessagesResource.ListRequest request = RequestForGmailMessages(service);
+
+            try
+            {
+                var response = request.Execute();
+
+                if (response.Messages != null)
+                {
+                    foreach (var mail in response.Messages)
+                    {
+                        var mailId = mail.Id;
+                        var threadId = mail.ThreadId;
+
+                        var messageRequest = service.Users.Messages.Get("me", mailId);
+                        messageRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Full;
+                        var message = messageRequest.Execute();
+
+                        var payload = message.Payload;
+                        var parts = payload.Parts;
+
+                        if (parts != null && parts.Count > 0)
+                        {
+                            foreach (var part in parts)
+                            {
+                                var body = part.Body.Data;
+
+                                if (body != null)
+                                {
+                                    var decodeBody = Base64UrlEncoder.Decode(body);
+                                    decodeBody = EmailParser.ParseMailsByDay(decodeBody, date);
+                                    Console.WriteLine(decodeBody);
+
+                                    if (decodeBody != null)
+                                    {
+                                        messagesList.Add(decodeBody);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var body = payload.Body.Data;
+
+                            if (body != null)
+                            {
+                                var decodeBody = Base64UrlEncoder.Decode(body);
+                                decodeBody = EmailParser.ParseMailsByDay(decodeBody, date);
+                                Console.WriteLine(decodeBody);
+
+                                if (decodeBody != null)
+                                {
+                                    messagesList.Add(decodeBody);
+                                }
+                            }
+                        }
+                        
+                    }
+                }
+
+                messagesList.Reverse();
+
+                return messagesList;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        private static UsersResource.MessagesResource.ListRequest RequestForGmailMessages(GmailService service)
+        {
+            var request = service.Users.Messages.List("me");
+            request.Q = $"from:{AppSettings.DefaultEmailAddress}";
+            request.LabelIds = "INBOX";
+            request.IncludeSpamTrash = false;
+            return request;
         }
 
         static public string GetGmailName(long chatId)

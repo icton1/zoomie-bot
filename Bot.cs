@@ -19,7 +19,14 @@ namespace GimmeTheZoomBot
             _botClient = new TelegramBotClient(token);
             _botClient.OnMessage += StartCommand;
             _botClient.OnMessage += GetGmailMessagesCommand;
+            _botClient.OnMessage += GetTodayCommand;
+            _botClient.OnMessage += GetTomorrowCommand;
             _botClient.OnCallbackQuery += AuthCommand;
+        }
+
+        public void Start()
+        {
+            _botClient.StartReceiving();
         }
 
         private async void GetGmailMessagesCommand(object sender, MessageEventArgs e)
@@ -70,12 +77,9 @@ namespace GimmeTheZoomBot
             }
         }
 
-        public void Start()
-        {
-            _botClient.StartReceiving();
-        }
 
-        public async void StartCommand(object sender, MessageEventArgs e)
+
+        private async void StartCommand(object sender, MessageEventArgs e)
         {
             //e.Message.Chat.Type == ChatType.Group
             if (e.Message.Type == MessageType.Text)
@@ -103,6 +107,57 @@ namespace GimmeTheZoomBot
                     //}
 
                     await _botClient.SendTextMessageAsync(e.Message.Chat.Id, message, replyMarkup: inlineKeyboard);
+                }
+            }
+        }
+
+        private async void GetTodayCommand(object sender, MessageEventArgs e)
+        {
+            if (e.Message.Type == MessageType.Text)
+            {
+                if (e.Message.Text == @"/get_tomorrow")
+                {
+                    var now = DateTime.Now;
+                    now = now.AddDays(1);
+                    
+                    List<string> messages = GmailServiceWorker.GetGmailMessages(now);
+
+                    if(messages != null && messages.Count > 0)
+                    {
+                        foreach (var message in messages)
+                        {
+                            await _botClient.SendTextMessageAsync(e.Message.Chat.Id, message);
+                        }
+                    }
+                    else
+                    {
+                        await _botClient.SendTextMessageAsync(e.Message.Chat.Id, "Завтра пар нет! Можно отдохнуть!");
+                    }
+                }
+            }
+        }
+
+        private async void GetTomorrowCommand(object sender, MessageEventArgs e)
+        {
+            if (e.Message.Type == MessageType.Text)
+            {
+                if (e.Message.Text == @"/get_today")
+                {
+                    var now = DateTime.Now;
+
+                    List<string> messages = GmailServiceWorker.GetGmailMessages(now);
+
+                    if (messages != null && messages.Count > 0)
+                    {
+                        foreach (var message in messages)
+                        {
+                            await _botClient.SendTextMessageAsync(e.Message.Chat.Id, message);
+                        }
+                    }
+                    else
+                    {
+                        await _botClient.SendTextMessageAsync(e.Message.Chat.Id, "Сегодня пар нет! Можно отдохнуть!");
+                    }
                 }
             }
         }
