@@ -1,0 +1,13 @@
+E:\C# projects\ICTon\GimmeTheZoomBot\obj\Release\netcoreapp3.1\PubTmp\Out\app_data\Jobs\Triggered\GimmeTheZoomBot\credentials.json
+E:\C# projects\ICTon\GimmeTheZoomBot\obj\Release\netcoreapp3.1\PubTmp\Out\app_data\Jobs\Triggered\GimmeTheZoomBot\GimmeTheZoomBot.exe
+E:\C# projects\ICTon\GimmeTheZoomBot\obj\Release\netcoreapp3.1\PubTmp\Out\app_data\Jobs\Triggered\GimmeTheZoomBot\GimmeTheZoomBot.dll
+E:\C# projects\ICTon\GimmeTheZoomBot\obj\Release\netcoreapp3.1\PubTmp\Out\app_data\Jobs\Triggered\GimmeTheZoomBot\GimmeTheZoomBot.deps.json
+E:\C# projects\ICTon\GimmeTheZoomBot\obj\Release\netcoreapp3.1\PubTmp\Out\app_data\Jobs\Triggered\GimmeTheZoomBot\GimmeTheZoomBot.runtimeconfig.json
+E:\C# projects\ICTon\GimmeTheZoomBot\obj\Release\netcoreapp3.1\PubTmp\Out\app_data\Jobs\Triggered\GimmeTheZoomBot\GimmeTheZoomBot.pdb
+E:\C# projects\ICTon\GimmeTheZoomBot\obj\Release\netcoreapp3.1\PubTmp\Out\app_data\Jobs\Triggered\GimmeTheZoomBot\Google.Apis.dll
+E:\C# projects\ICTon\GimmeTheZoomBot\obj\Release\netcoreapp3.1\PubTmp\Out\app_data\Jobs\Triggered\GimmeTheZoomBot\Google.Apis.Auth.PlatformServices.dll
+E:\C# projects\ICTon\GimmeTheZoomBot\obj\Release\netcoreapp3.1\PubTmp\Out\app_data\Jobs\Triggered\GimmeTheZoomBot\Google.Apis.Auth.dll
+E:\C# projects\ICTon\GimmeTheZoomBot\obj\Release\netcoreapp3.1\PubTmp\Out\app_data\Jobs\Triggered\GimmeTheZoomBot\Google.Apis.Core.dll
+E:\C# projects\ICTon\GimmeTheZoomBot\obj\Release\netcoreapp3.1\PubTmp\Out\app_data\Jobs\Triggered\GimmeTheZoomBot\Google.Apis.Gmail.v1.dll
+E:\C# projects\ICTon\GimmeTheZoomBot\obj\Release\netcoreapp3.1\PubTmp\Out\app_data\Jobs\Triggered\GimmeTheZoomBot\Newtonsoft.Json.dll
+E:\C# projects\ICTon\GimmeTheZoomBot\obj\Release\netcoreapp3.1\PubTmp\Out\app_data\Jobs\Triggered\GimmeTheZoomBot\Telegram.Bot.dll
