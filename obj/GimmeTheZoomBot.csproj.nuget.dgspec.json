@@ -44,6 +44,10 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "dependencies": {
+            "AngleSharp": {
+              "target": "Package",
+              "version": "[0.14.0, )"
+            },
             "Google.Apis.Gmail.v1": {
               "target": "Package",
               "version": "[1.49.0.2146, )"

@@ -69,7 +69,7 @@ namespace GimmeTheZoomBot
                 // automatically when the authorization flow completes for the first time.
                 string credPath = "token.json";
 
-                if(credential == null)
+                if (credential == null)
                 {
                     credential = Init(chatId);
                 }
@@ -104,9 +104,9 @@ namespace GimmeTheZoomBot
             return service;
         }
 
-        static public List<Message> GetGmailMessage(string from = "process@isu.ifmo.ru")
+        static public List<string> GetGmailMessages(int number = 5, string from = "process@isu.ifmo.ru")
         {
-            List<Message> messsages = new List<Message>();
+            List<string> messagesList = new List<string>();
 
             var service = GetService();
 
@@ -118,13 +118,14 @@ namespace GimmeTheZoomBot
             try
             {
                 var response = request.Execute();
-                
+
                 if (response.Messages != null)
                 {
                     int count = 0;
+                    bool all = false;
+
                     foreach (var mail in response.Messages)
                     {
-                        count++;
                         var mailId = mail.Id;
                         var threadId = mail.ThreadId;
 
@@ -135,32 +136,46 @@ namespace GimmeTheZoomBot
                         var payload = message.Payload;
                         var parts = payload.Parts;
 
-                        foreach(var part in parts)
+
+
+                        foreach (var part in parts)
                         {
                             var body = part.Body.Data;
 
                             if (body != null)
                             {
                                 var decodeBody = Base64UrlEncoder.Decode(body);
+                                decodeBody = EmailParser.ParseMail(decodeBody);
                                 Console.WriteLine(decodeBody);
+
+                                if(decodeBody != null)
+                                {
+                                    messagesList.Add(decodeBody);
+                                    count++;
+                                }
+                                
+                            }
+
+                            if (count >= number)
+                            {
+                                all = true;
+                                break;
                             }
                         }
 
+                        if (all)
+                            break;
                     }
-
-                    Console.WriteLine(count);
-                }
-                else
-                {
-                    Console.WriteLine("Nothing was found!");
                 }
 
-                return messsages;
+                messagesList.Reverse();
+
+                return messagesList;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return messsages;
+                return new List<string>();
             }
         }
 

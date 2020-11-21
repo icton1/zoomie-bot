@@ -18,19 +18,35 @@ namespace GimmeTheZoomBot
         {
             _botClient = new TelegramBotClient(token);
             _botClient.OnMessage += StartCommand;
-            _botClient.OnMessage += GetGmailCommand;
+            _botClient.OnMessage += GetGmailMessagesCommand;
             _botClient.OnCallbackQuery += AuthCommand;
         }
 
-        private async void GetGmailCommand(object sender, MessageEventArgs e)
+        private async void GetGmailMessagesCommand(object sender, MessageEventArgs e)
         {
             if (e.Message.Type == MessageType.Text)
             {
-                if (e.Message.Text == @"/get")
+                if (e.Message.Text.Contains(@"/get_last"))
                 {
-                    GmailServiceWorker.GetGmailMessage();
+                    List<string> messages = new List<string>();
+                    string[] param = e.Message.Text.Split();
+                    int number;
+
+                    if(param.Length > 1 && int.TryParse(param[1], out number))
+                    {
+                         messages = GmailServiceWorker.GetGmailMessages(number);
+                    }
+                    else
+                    {
+                         messages = GmailServiceWorker.GetGmailMessages();
+                    }
                     
-                    await _botClient.SendTextMessageAsync(e.Message.Chat.Id, "Done!");
+                    
+                    foreach(var message in messages)
+                    {
+                        await _botClient.SendTextMessageAsync(e.Message.Chat.Id, message);
+                    }
+                    
                 }
             }
         }

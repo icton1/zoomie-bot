@@ -67,3 +67,4 @@ E:\C# projects\ICTon\GimmeTheZoomBot\bin\Debug\netcoreapp3.1\MimeKit.dll
 E:\C# projects\ICTon\GimmeTheZoomBot\bin\Debug\netcoreapp3.1\BouncyCastle.Crypto.dll
 E:\C# projects\ICTon\GimmeTheZoomBot\bin\Debug\netcoreapp3.1\System.Security.Cryptography.Pkcs.dll
 E:\C# projects\ICTon\GimmeTheZoomBot\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Security.Cryptography.Pkcs.dll
+E:\C# projects\ICTon\GimmeTheZoomBot\bin\Debug\netcoreapp3.1\AngleSharp.dll
