@@ -18,16 +18,34 @@ namespace GimmeTheZoomBot
         {
             _botClient = new TelegramBotClient(token);
             _botClient.OnMessage += StartCommand;
+            _botClient.OnMessage += GetGmailCommand;
             _botClient.OnCallbackQuery += AuthCommand;
         }
 
-        private void AuthCommand(object sender, CallbackQueryEventArgs e)
+        private async void GetGmailCommand(object sender, MessageEventArgs e)
+        {
+            if (e.Message.Type == MessageType.Text)
+            {
+                if (e.Message.Text == @"/get")
+                {
+                    GmailServiceWorker.GetGmailMessage();
+                    
+                    await _botClient.SendTextMessageAsync(e.Message.Chat.Id, "Done!");
+                }
+            }
+        }
+
+        private async void AuthCommand(object sender, CallbackQueryEventArgs e)
         {
             var message = e.CallbackQuery;
             if (message.Data == "Auth")
             {
                 GmailServiceWorker.Init(message.Message.Chat.Id);
                 GmailServiceWorker.GetService();
+
+                string messageToUser = $"Вы успешно прошли авторизацию, как {GmailServiceWorker.GetGmailName(message.Message.Chat.Id)}";
+
+                await _botClient.SendTextMessageAsync(message.Message.Chat.Id, messageToUser);
             }
             else if (message.Data == "ReAuth")
             {
@@ -43,6 +61,7 @@ namespace GimmeTheZoomBot
 
         public async void StartCommand(object sender, MessageEventArgs e)
         {
+            //e.Message.Chat.Type == ChatType.Group
             if (e.Message.Type == MessageType.Text)
             {
                 if (e.Message.Text == @"/start")

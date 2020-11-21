@@ -3,6 +3,7 @@ using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +12,7 @@ using System.Text;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using MimeKit;
 
 namespace GimmeTheZoomBot
 {
@@ -100,6 +102,66 @@ namespace GimmeTheZoomBot
             });
 
             return service;
+        }
+
+        static public List<Message> GetGmailMessage(string from = "process@isu.ifmo.ru")
+        {
+            List<Message> messsages = new List<Message>();
+
+            var service = GetService();
+
+            var request = service.Users.Messages.List("me");
+            request.Q = $"from:{from}";
+            request.LabelIds = "INBOX";
+            request.IncludeSpamTrash = false;
+
+            try
+            {
+                var response = request.Execute();
+                
+                if (response.Messages != null)
+                {
+                    int count = 0;
+                    foreach (var mail in response.Messages)
+                    {
+                        count++;
+                        var mailId = mail.Id;
+                        var threadId = mail.ThreadId;
+
+                        var messageRequest = service.Users.Messages.Get("me", mailId);
+                        messageRequest.Format = UsersResource.MessagesResource.GetRequest.FormatEnum.Full;
+                        var message = messageRequest.Execute();
+
+                        var payload = message.Payload;
+                        var parts = payload.Parts;
+
+                        foreach(var part in parts)
+                        {
+                            var body = part.Body.Data;
+
+                            if (body != null)
+                            {
+                                var decodeBody = Base64UrlEncoder.Decode(body);
+                                Console.WriteLine(decodeBody);
+                            }
+                        }
+
+                    }
+
+                    Console.WriteLine(count);
+                }
+                else
+                {
+                    Console.WriteLine("Nothing was found!");
+                }
+
+                return messsages;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return messsages;
+            }
         }
 
         static public string GetGmailName(long chatId)
