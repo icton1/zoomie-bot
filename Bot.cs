@@ -89,22 +89,23 @@ namespace GimmeTheZoomBot
                     InlineKeyboardMarkup inlineKeyboard;
                     string message;
 
-                    //if (!GmailServiceWorker.IsAuth(e.Message.Chat.Id))
+                    if (!GmailServiceWorker.IsAuth(e.Message.Chat.Id))
                     {
                         inlineKeyboard = new InlineKeyboardMarkup(
-                            new[] { InlineKeyboardButton.WithCallbackData("Авторизируйся здесь!", "Auth") }
+                            new[] { InlineKeyboardButton.WithCallbackData("Авторизируйся здесь 📩", "Auth") }
                         );
 
-                        message = "Привет! Чтобы получать уведомления о парах, необходимо подключить почту!";
+                        message = "Привет!\nМеня зовут Zoomie!\nЯ создан, чтобы помочь тебе чательнее отслеживать новую информацию о проведении пар на дистанционном обучении!" +
+                            " Чтобы получать уведомления о парах, необходимо подключить почту.";
                     }
-                    //else
-                    //{
-                    //    inlineKeyboard = new InlineKeyboardMarkup(
-                    //        new[] { InlineKeyboardButton.WithCallbackData("Авторизовать другую почту!", "ReAuth") }
-                    //    );
+                    else
+                    {
+                        inlineKeyboard = new InlineKeyboardMarkup(
+                            new[] { InlineKeyboardButton.WithCallbackData("Авторизовать другую почту ❗", "ReAuth") }
+                        );
 
-                    //    message = $"Ты уже авторизован как {GmailServiceWorker.GetGmailName(e.Message.Chat.Id)}";
-                    //}
+                        message = $"Ты уже авторизован как {GmailServiceWorker.GetGmailName(e.Message.Chat.Id)}";
+                    }
 
                     await _botClient.SendTextMessageAsync(e.Message.Chat.Id, message, replyMarkup: inlineKeyboard);
                 }
@@ -131,7 +132,7 @@ namespace GimmeTheZoomBot
                     }
                     else
                     {
-                        await _botClient.SendTextMessageAsync(e.Message.Chat.Id, "Завтра пар нет! Можно отдохнуть!");
+                        await _botClient.SendTextMessageAsync(e.Message.Chat.Id, "Завтра пар нет! Можно отдохнуть 😴😴😴");
                     }
                 }
             }
@@ -156,7 +157,7 @@ namespace GimmeTheZoomBot
                     }
                     else
                     {
-                        await _botClient.SendTextMessageAsync(e.Message.Chat.Id, "Сегодня пар нет! Можно отдохнуть!");
+                        await _botClient.SendTextMessageAsync(e.Message.Chat.Id, "Сегодня пар нет! Можно отдохнуть 😴😴😴");
                     }
                 }
             }

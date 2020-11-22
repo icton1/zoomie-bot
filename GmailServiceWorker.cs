@@ -133,7 +133,7 @@ namespace GimmeTheZoomBot
                         var payload = message.Payload;
                         var parts = payload.Parts;
 
-                        if (parts.Count > 0)
+                        if (parts == null && parts.Count > 0)
                         {
                             foreach (var part in parts)
                             {
@@ -252,8 +252,7 @@ namespace GimmeTheZoomBot
                                     messagesList.Add(decodeBody);
                                 }
                             }
-                        }
-                        
+                        }    
                     }
                 }
 
